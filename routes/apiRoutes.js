@@ -1,5 +1,8 @@
+const fs = require("fs");
+const util = require("util");
 const { v4: uuidv4 } = require('uuid');
 const dataBase = require ("../db/db.json");
+const writeFileAsync = util.promisify(fs.writeFile)
 
 module.exports = function (app) {
  
@@ -14,7 +17,10 @@ module.exports = function (app) {
     let id = uuidv4();
     newNote.id = id;
     dataBase.push(newNote);
-    res.json(dataBase);
+
+    writeFileAsync("./db/db.json", JSON.stringify(dataBase)).then ( () => {
+      res.json(newNote);
+    }).catch(err => console.log(err))
   }); 
   
 
@@ -29,7 +35,7 @@ module.exports = function (app) {
       }
     }
     res.json(dataBase);
-    console.log (dataBase)
+
 
   });
 
