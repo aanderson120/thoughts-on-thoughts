@@ -9,40 +9,39 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
-
-// --------------html routes--------------------//
-app.get("*", function(req, res) { 
-    res.sendFile(path.join(__dirname, "index.html"));
-  });  //home route
-  
+// html routes
+  app.get("*", function(req, res) { 
+    res.sendFile(path.join(__dirname, "/public/index.html"));
+    });  //home route
+    
   app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "notes.html"));
-  }); //notes route
+    res.sendFile(path.join(__dirname, "public/notes.html"));
+    }); //notes route
 
-
-// --------------api routes--------------------//
-app.get("/api/notes", (req, res) => {
-    getSavedNotes()
-    .then((savedNotes) => {
-        res.send(JSON.parse(savedNotes))
-    })
-    .catch((err) => res.status(500).json(err));
-});
+// API routes
+  app.get("/api/notes", (req, res) => {
+      getSavedNotes()
+      .then((savedNotes) => {
+          res.send(JSON.parse(savedNotes))
+      })
+      .catch((err) => res.status(500).json(err));
+  });
   
-  // Create New notes - takes in JSON input
+// Create New notes - takes in JSON input
   app.post("/api/notes", (req, res) => {
-    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
+    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
     let newNote = {
-        title: req.body.title,
-        text: req.body.title,
-        id: id,
+      title: req.body.title,
+      text: req.body.text, 
+      id: id,
     }
+
     savedNotes.push(newNote);
 
     fs.writeFileSync("./db/db.json", JSON.stringify(savedNotes), (err) => {
-        if (err) throw err;
-    });
-    return res.json(savedNotes);
+        if (err) throw err; 
+      });
+        return res.json(savedNotes);
 
   });
 
