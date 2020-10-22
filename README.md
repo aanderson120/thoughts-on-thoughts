@@ -4,7 +4,7 @@
 Ever have so many thoughts you do not know where to keep them? Ever spend too much time thinking about all the things you forgot? This app will let you keep track of all your arrant thoughts. Maybe help you make lists for all the things you might forget.
 
 ## Deployed Site
-[Thoughts on Thoughts] (https://thoughts-on-thoughts.herokuapp.com/)
+[Thoughts on Thoughts](https://thoughts-on-thoughts.herokuapp.com/)
 
 ![walkthrough](./assets/walkthrough.gif)
 
