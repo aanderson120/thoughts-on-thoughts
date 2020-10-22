@@ -1,60 +1,17 @@
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
 
-// html routes
-  app.get("*", function(req, res) { 
-    res.sendFile(path.join(__dirname, "/public/index.html"));
-    });  //home route
-    
-  app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
-    }); //notes route
 
-// API routes
-  app.get("/api/notes", (req, res) => {
-      getSavedNotes()
-      .then((savedNotes) => {
-          res.send(JSON.parse(savedNotes))
-      })
-      .catch((err) => res.status(500).json(err));
-  });
-  
-// Create New notes - takes in JSON input
-  app.post("/api/notes", (req, res) => {
-    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
-    let newNote = {
-      title: req.body.title,
-      text: req.body.text, 
-      id: id,
-    }
+require("./routes/apiRoutes.js")(app);
+require("./routes/htmlRoutes.js")(app);
 
-    savedNotes.push(newNote);
 
-    fs.writeFileSync("./db/db.json", JSON.stringify(savedNotes), (err) => {
-        if (err) throw err; 
-      });
-        return res.json(savedNotes);
-
-  });
-
-  // deletes notes
-  app.delete("/api/notes/:id", (req, res) => {
-    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
-    let noteID = savedNotes.filter(x=>x.id!=req.params.id)
-      fs.writeFileSync("/db/db.json", JSON.stringify(noteID), (err) => {
-        if (err) throw err;
-      });
-      return res.json(savedNotes);
-  });
-  
   // Starts the server to begin listening
   // =============================================================
   app.listen(PORT, function() {
