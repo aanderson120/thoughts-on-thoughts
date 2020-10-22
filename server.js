@@ -31,46 +31,29 @@ app.get("/api/notes", (req, res) => {
   
   // Create New notes - takes in JSON input
   app.post("/api/notes", (req, res) => {
-    let noteArray = [];
-    let newNote = req.body;
+    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
+    let newNote = {
+        title: req.body.title,
+        text: req.body.title,
+        id: id,
+    }
+    savedNotes.push(newNote);
 
-    fs.readFile("db/db.json", (err, data) => {
+    fs.writeFileSync("./db/db.json", JSON.stringify(savedNotes), (err) => {
         if (err) throw err;
-        notesArray = JSON.parse(data);
-
-        if(noteArray.length === 0){
-            newNote.id=1;
-        }
-        if(noteArray.length > 0) {
-            let currLength = noteArray.length;
-            newNote.id = note_array[currLength -1].id + 1;
-        }
-
-        noteArray.push(newNote);
-        fs.writeFile("db/db.json", JSON.stringify(noteArray), (err) => {
-            if (err) throw err;
-        });
     });
-    res.json(newNote);
+    return res.json(savedNotes);
+
   });
 
   // deletes notes
   app.delete("/api/notes/:id", (req, res) => {
-      let noteId = parseInt(req.params.id);
-      fs.readFile("db/db.json", (err, data) => {
-          if (err) throw err;
-          let noteArray = JSON.parse(data);
-          for (let i = 0; i <notesArray.length; i++) {
-              if (noteId ===notesArray[i].id) {
-                  res.json(notesArray.splice(i, 1));
-              }
-          }
-
-          fs.writeFile("db/db.json", JSON.stringify(notesArray), (err) => {
-              if (err) throw err;
-          });
-
+    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    let noteID = savedNotes.filter(x=>x.id!=req.params.id)
+      fs.writeFileSync("/db/db.json", JSON.stringify(noteID), (err) => {
+        if (err) throw err;
       });
+      return res.json(savedNotes);
   });
   
   // Starts the server to begin listening
